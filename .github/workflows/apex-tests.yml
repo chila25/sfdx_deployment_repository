@@ -1,0 +1,22 @@
+name: Apex Tests
+
+on:
+  push:
+    branches:
+      - dev
+      - uat
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install Salesforce CLI
+      uses: amtrack/sfdx-action@v1
+
+    - name: Run Apex Tests
+      run: sfdx force:apex:test:run -u DevSandbox --wait 10 --resultformat human

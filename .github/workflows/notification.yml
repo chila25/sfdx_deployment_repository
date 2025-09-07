@@ -1,0 +1,27 @@
+name: Failure Notification
+
+on:
+  workflow_run:
+    workflows: [Validation, Apex Tests, Deploy to Dev, Deploy to UAT, Deploy to Production]
+    types:
+      - completed
+
+jobs:
+  notify:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send Email Notification
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.example.com
+        server_port: 587
+        username: ${{ secrets.SMTP_USERNAME }}
+        password: ${{ secrets.SMTP_PASSWORD }}
+        subject: 'CI/CD Pipeline Failure Notification'
+        to: 'your-email@example.com'
+        from: 'ci-cd@yourcompany.com'
+        body: |
+          The workflow ${{ github.event.workflow_run.name }} failed on branch ${{ github.event.workflow_run.head_branch }}.
+          Check the logs: ${{ github.event.workflow_run.html_url }}

@@ -1,0 +1,22 @@
+name: Validation
+
+on:
+  push:
+    branches:
+      - dev
+      - uat
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install Salesforce CLI
+      uses: amtrack/sfdx-action@v1
+
+    - name: Validate Project Structure
+      run: sfdx force:source:validate -p force-app

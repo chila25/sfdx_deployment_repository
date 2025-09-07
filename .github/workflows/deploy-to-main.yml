@@ -1,0 +1,20 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install Salesforce CLI
+      uses: amtrack/sfdx-action@v1
+
+    - name: Deploy Metadata to Production (using DevHub as Production)
+      run: sfdx force:source:deploy -p force-app -u DevHub --wait 10
