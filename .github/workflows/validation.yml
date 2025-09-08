@@ -36,5 +36,5 @@ jobs:
         body: |
           🚨 Validation failed on branch ${{ github.ref }}.
           Workflow: ${{ github.workflow }}
-          Run: ${{ github.run_number }}
+          Run: ${{ github.run_number }}.
           Logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
