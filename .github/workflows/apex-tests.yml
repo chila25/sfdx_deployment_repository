@@ -17,7 +17,7 @@ jobs:
       run: npm install --global @salesforce/cli
 
     - name: Authenticate to DevSandbox
-      run: echo ${{ secrets.DEV_SFDX_AUTH_URL }} | sf auth:sfdxurl:store --alias DevSandbox
+      run: echo "${{ secrets.DEV_SF_AUTH_URL }}" | sf auth:sfdxurl:store --alias DevSandbox --sfdx-url-stdin
 
     - name: Run Apex Tests
       run: sf apex run test --resultformat human --wait 10 --target-org DevSandbox
@@ -30,9 +30,9 @@ jobs:
         server_port: 587
         username: ${{ secrets.EMAIL_USERNAME }}
         password: ${{ secrets.EMAIL_PASSWORD }}
-        subject: "Apex Test Failed"
+        subject: "Apex Test Failure"
         to: padduja712@gmail.com
         from: ci-cd@yourcompany.com
         body: |
-          🚨 Apex Tests failed on branch ${{ github.ref }}.
+          🚨 Apex Test failed on branch ${{ github.ref }}.
           Logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

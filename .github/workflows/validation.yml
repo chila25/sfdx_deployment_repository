@@ -19,7 +19,7 @@ jobs:
     - name: Authenticate to DevSandbox
       run: echo "${{ secrets.DEV_SF_AUTH_URL }}" | sf auth:sfdxurl:store --alias DevSandbox --sfdx-url-stdin
 
-    - name: Validate Metadata (Full Project)
+    - name: Validate Metadata
       run: sf project deploy start --source-dir force-app/main/default --dry-run --target-org DevSandbox
 
     - name: Send Email on Validation Failure

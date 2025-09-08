@@ -16,13 +16,13 @@ jobs:
     - name: Install Salesforce CLI
       run: npm install --global @salesforce/cli
 
-    - name: Authenticate to Production
-      run: echo ${{ secrets.PROD_SFDX_AUTH_URL }} | sf auth:sfdxurl:store --alias Production
+    - name: Authenticate to Production Org
+      run: echo "${{ secrets.PROD_SFDX_AUTH_URL }}" | sf auth:sfdxurl:store --alias ProdOrg --sfdx-url-stdin
 
     - name: Deploy Metadata to Production
-      run: sf project deploy start --source-dir force-app/main/default --target-org Production --wait 10
+      run: sf project deploy start --source-dir force-app/main/default --target-org ProdOrg --wait 10
 
-    - name: Send Email on Deploy to Prod Failure
+    - name: Send Email on Deploy to Production Failure
       if: failure()
       uses: dawidd6/action-send-mail@v3
       with:
@@ -30,7 +30,7 @@ jobs:
         server_port: 587
         username: ${{ secrets.EMAIL_USERNAME }}
         password: ${{ secrets.EMAIL_PASSWORD }}
-        subject: "Deployment to Production Failed"
+        subject: "Deploy to Production Failure"
         to: padduja712@gmail.com
         from: ci-cd@yourcompany.com
         body: |
