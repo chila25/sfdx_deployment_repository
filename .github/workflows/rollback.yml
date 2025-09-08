@@ -11,7 +11,11 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Rollback to Previous Commit
-      run: |
-        git revert HEAD --no-edit
-        git push origin dev
+    - name: Install Salesforce CLI
+      run: npm install sfdx-cli --global
+
+    - name: Authenticate to DevSandbox
+      run: echo ${{ secrets.DEV_SFDX_AUTH_URL }} | sfdx auth:sfdxurl:store --setalias DevSandbox
+
+    - name: Rollback to Backup State
+      run: sfdx force:source:deploy -p backups/last-good-state -u DevSandbox --wait 10

@@ -15,13 +15,15 @@ jobs:
     - name: Send Email Notification
       uses: dawidd6/action-send-mail@v3
       with:
-        server_address: smtp.example.com
+        server_address: smtp.gmail.com
         server_port: 587
-        username: ${{ secrets.SMTP_USERNAME }}
-        password: ${{ secrets.SMTP_PASSWORD }}
-        subject: 'CI/CD Pipeline Failure Notification'
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: 'CI/CD Pipeline Failure Alert'
         to: 'your-email@example.com'
-        from: 'ci-cd@yourcompany.com'
+        from: 'ci-cd-notify@yourdomain.com'
         body: |
-          The workflow ${{ github.event.workflow_run.name }} failed on branch ${{ github.event.workflow_run.head_branch }}.
-          Check the logs: ${{ github.event.workflow_run.html_url }}
+          🚨 The workflow "${{ github.event.workflow_run.name }}" failed.
+          - Branch: ${{ github.event.workflow_run.head_branch }}
+          - Conclusion: ${{ github.event.workflow_run.conclusion }}
+          - Check logs here: ${{ github.event.workflow_run.html_url }}
