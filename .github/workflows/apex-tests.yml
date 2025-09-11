@@ -1,9 +1,8 @@
-name: Apex Tests
+name: Salesforce Apex Tests
 
 on:
   push:
-    branches:
-      - dev
+    branches: [dev]
 
 jobs:
   apex-tests:
@@ -19,8 +18,8 @@ jobs:
     - name: Authenticate to DevSandbox
       run: echo "${{ secrets.DEV_SF_AUTH_URL }}" | sf auth:sfdxurl:store --alias DevSandbox --sfdx-url-stdin
 
-    - name: Run Apex Tests
-      run: sf apex run test --resultformat human --wait 10 --target-org DevSandbox
+    - name: Run Apex Tests with Coverage
+      run: sf apex run test --resultformat tap --codecoverage --wait 10 --target-org DevSandbox
 
     - name: Send Email on Apex Test Failure
       if: failure()
