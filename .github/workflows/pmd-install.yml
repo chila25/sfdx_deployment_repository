@@ -17,9 +17,9 @@ jobs:
 
       - name: Download PMD
         run: |
-          wget https://github.com/pmd/pmd/releases/download/pmd_releases/7.17.0/pmd-bin-7.17.0.zip
-          unzip pmd-bin-7.17.0.zip
-          mv pmd-bin-7.17.0 pmd
+          wget https://github.com/pmd/pmd/releases/download/pmd_releases/7.16.0/pmd-bin-7.16.0.zip
+          unzip pmd-bin-7.16.0.zip
+          mv pmd-bin-7.16.0 pmd
 
       - name: Verify PMD Installation
         run: ./pmd/bin/run.sh pmd -version
