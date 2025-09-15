@@ -1,0 +1,25 @@
+name: Install PMD
+
+on: [push, pull_request]
+
+jobs:
+  install-pmd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Install Java (required for PMD)
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'  # Added required input
+          java-version: '17'
+
+      - name: Download PMD
+        run: |
+          wget https://github.com/pmd/pmd/releases/download/pmd_releases/6.58.0/pmd-bin-6.58.0.zip
+          unzip pmd-bin-6.58.0.zip
+          mv pmd-bin-6.58.0 pmd
+
+      - name: Verify PMD Installation
+        run: ./pmd/bin/run.sh pmd -version

@@ -1,0 +1,50 @@
+name: PMD Static Analysis
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - uat
+  pull_request:
+
+jobs:
+  pmd-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download PMD
+        run: |
+          wget https://github.com/pmd/pmd/releases/download/pmd_releases/6.58.0/pmd-bin-6.58.0.zip
+          unzip pmd-bin-6.58.0.zip
+          mv pmd-bin-6.58.0 pmd
+
+      - name: Run PMD on Apex classes
+        run: |
+          ./pmd/bin/run.sh pmd -d force-app/main/default/classes \
+          -R category/apex/design.xml \
+          -f xml \
+          -r pmd-report.xml
+
+      - name: Upload PMD Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: PMD-Report
+          path: pmd-report.xml
+
+      - name: Enforce Quality Gate
+        run: |
+          count=$(grep -c "<violation" pmd-report.xml)
+          echo "Total PMD violations: $count"
+          if [ $count -gt 5 ]; then
+            echo "PMD Quality Gate failed!"
+            exit 1
+          fi
