@@ -1,0 +1,55 @@
+name: PMD Static Analysis & Quality Gate
+
+on:
+  push:
+    branches:
+      - dev
+      - uat
+      - main
+  pull_request:
+
+jobs:
+  pmd-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Download & Install PMD
+        run: |
+          mkdir -p pmd
+          curl -L https://github.com/pmd/pmd/releases/download/pmd_releases/6.55.0/pmd-bin-6.55.0.zip -o pmd/pmd.zip
+          unzip pmd/pmd.zip -d pmd
+          rm pmd/pmd.zip
+          echo "PMD installed at pmd/pmd-bin-6.55.0"
+
+      - name: Run PMD Analysis
+        run: |
+          pmd/pmd-bin-6.55.0/bin/run.sh pmd \
+            -d force-app/main/default \
+            -R pmd/ruleset.xml \
+            -f xml \
+            -r pmd/pmd-report.xml
+
+      - name: Check PMD Violations (Quality Gate)
+        run: |
+          violations=$(grep -c "<violation" pmd/pmd-report.xml || echo 0)
+          echo "Total PMD Violations: $violations"
+          if [ "$violations" -gt 5 ]; then
+            echo "❌ PMD Quality Gate Failed: More than 5 violations!"
+            exit 1
+          else
+            echo "✅ PMD Quality Gate Passed"
+
+      - name: Upload PMD Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: PMD-Report
+          path: pmd/pmd-report.xml
