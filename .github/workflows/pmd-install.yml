@@ -17,7 +17,7 @@ jobs:
 
       - name: Download PMD
         run: |
-          wget https://github.com/pmd/pmd/releases/download/pmd_releases/7.16.0/pmd-bin.zip
+          wget https://github.com/pmd/pmd/releases/download/pmd_releases/6.59.0/pmd-bin.zip
           unzip pmd-bin.zip
           mv pmd-bin pmd
 
